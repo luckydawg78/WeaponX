@@ -343,7 +343,7 @@ def main() -> None:
     # Build and "execute" plans
     for host in hosts:
         plan = plan_actions_for_host(host,service_config)
-        execute_plan_for_host(host, plan)
+        execute_plan_for_host(host, plan,service_config)
 
 
 if __name__ == "__main__":
