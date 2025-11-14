@@ -1,0 +1,35 @@
+{
+  "services": {
+    "ssh": {
+      "actions": ["credential_testing"],
+      "tools": [
+        "hydra_ssh",
+        "msf_ssh_login"
+      ]
+    },
+    "ftp": {
+      "actions": ["credential_testing"],
+      "tools": [
+        "hydra_ftp"
+      ]
+    },
+    "http": {
+      "actions": ["web_followup"],
+      "tools": [
+        "nikto_http",
+        "whatweb_fingerprint"
+      ]
+    },
+    "https": {
+      "actions": ["web_followup"],
+      "tools": [
+        "nikto_https",
+        "sslscan"
+      ]
+    }
+  },
+  "defaults": {
+    "actions": ["other"],
+    "tools": []
+  }
+}

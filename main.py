@@ -205,49 +205,78 @@ def load_scancannon_results(results_root: Path) -> List[Host]:
 
     return list(hosts.values())
 
+def load_service_config(path: Path|None) -> dict:
+    default_config = {
+        "services": {
+            "ssh": {"actions": ["credential_testing"], "tools": []},
+            "ftp": {"actions": ["credential_testing"], "tools": []},
+            "http": {"actions": ["web_followup"], "tools": []},
+            "https": {"actions": ["web_followup"], "tools": []},
+        },
+        "defaults": {"actions": ["other"], "tools": []},
+    }
 
+    if path is None or not path.is_file():
+        return default_config
+    
+    suffix = path.suffix.lower()
+    try:
+        if suffix == ".json":
+            with path.open("r", encoding="utf-8") as f:
+                return json.load(f)
+        else:
+            print(f"[!] Unsupported config file format: {suffix}. Using default config.")
+    except Exception as e:
+            print(f"[!] Error loading config file: {e}. Using default config.")
+    
 # -----------------------------
 # Attack workflow hooks (stubs)
 # -----------------------------
 
-def plan_actions_for_host(host: Host) -> Dict[str, List[Service]]:
-    """
-    Decide what to do with each host based on its services.
-    This only returns a plan; it does NOT perform any attacks.
+from collections import defaultdict
 
-    Example idea (you can customize this logic):
-      - ssh / ftp  -> credential testing module
-      - http / https -> web enumeration module
+def plan_actions_for_host(host: Host, service_config: dict) -> Dict[str, List[Service]]:
     """
-    plan: Dict[str, List[Service]] = {
-        "credential_testing": [],
-        "web_followup": [],
-        "other": [],
-    }
+    Decide what to do with each host based on its services and the config.
+
+    Config structure (example):
+      {
+        "services": {
+          "ssh":   {"actions": ["credential_testing"], "tools": [...]},
+          "http":  {"actions": ["web_followup"],       "tools": [...]},
+          ...
+        },
+        "defaults": {"actions": ["other"], "tools": []}
+      }
+    """
+    services_cfg = service_config.get("services", {})
+    defaults_cfg = service_config.get("defaults", {"actions": ["other"], "tools": []})
+
+    plan: Dict[str, List[Service]] = defaultdict(list)
 
     for svc in host.services.values():
-        if svc.name in {"ssh", "ftp", "telnet"}:
-            plan["credential_testing"].append(svc)
-        elif svc.name in {"http", "https"}:
-            plan["web_followup"].append(svc)
-        else:
-            plan["other"].append(svc)
+        cfg = services_cfg.get(svc.name, defaults_cfg)
+        actions = cfg.get("actions", [])
+        for action in actions:
+            plan[action].append(svc)
 
-    # Clean up empty keys
-    return {k: v for k, v in plan.items() if v}
+    return dict(plan)
 
 
-def execute_plan_for_host(host: Host, plan: Dict[str, List[Service]]) -> None:
+
+def execute_plan_for_host(
+    host: Host,
+    plan: Dict[str, List[Service]],
+    service_config: dict,
+) -> None:
     """
     Placeholder for your automated workflow.
 
-    Here is where, in your lab environment, you could:
-      - call out to a password-auditing tool
-      - run a web scanner against http/https services
-      - later, integrate Metasploit modules, etc.
-
-    For now, this just prints what *would* happen.
+    Uses the config to show which tools are associated with each service/action.
     """
+    services_cfg = service_config.get("services", {})
+    defaults_cfg = service_config.get("defaults", {"actions": ["other"], "tools": []})
+
     print(f"\n[+] Host {host.ip}")
     print(f"    Ports: {sorted(host.ports)}")
 
@@ -258,8 +287,13 @@ def execute_plan_for_host(host: Host, plan: Dict[str, List[Service]]) -> None:
     for action_type, services in plan.items():
         print(f"    Action: {action_type}")
         for svc in services:
-            # Stub: replace prints with your actual tooling integration
-            print(f"      -> would process {svc} on {host.ip}")
+            svc_cfg = services_cfg.get(svc.name, defaults_cfg)
+            tool_ids = svc_cfg.get("tools", [])
+
+            if tool_ids:
+                print(f"      -> would process {svc} using tools: {', '.join(tool_ids)}")
+            else:
+                print(f"      -> would process {svc} (no tools configured)")
 
 
 # -----------------------------
@@ -281,12 +315,17 @@ def build_arg_parser() -> argparse.ArgumentParser:
         type=Path,
         help="Optional path to write JSON summary of hosts/services.",
     )
+    parser.add_argument(
+        "--config",
+        type=Path,
+        help="Path to configuration file for customizing workflow (not implemented).",
+    )
     return parser
 
 
 def main() -> None:
     args = build_arg_parser().parse_args()
-
+    service_config = load_service_config(args.config)
     hosts = load_scancannon_results(args.results)
     if not hosts:
         print(f"[!] No hosts found under {args.results}")
