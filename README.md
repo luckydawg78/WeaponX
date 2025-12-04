@@ -109,7 +109,7 @@ if mt.connect():
 - Wordlists (`usernames.txt`, `passwords.txt`) must be supplied by you.
 
 ## WeaponX Video Presentation
-The following video is our official IT 359 project presentation for WeaponX. In this video, I explain what WeaponX is, why we built it, how it integrates with ScanCannon, and who would benefit from using it. I also cover the background of security researcher Johnny Xmas and the BurbSec community. Afterward, I walk through a full live demonstration, starting from loading real ScanCannon results to showing WeaponX parse hosts, build action plans, and run follow-up tools automatically.
+The following video is our official IT 359 project presentation for WeaponX. In this video, I explain what WeaponX is, why we built it, how it integrates with ScanCannon, and who would benefit from using it. I also cover the background of security researcher Johnny Xmas and the BurbSec community. Afterward, I walk through a full live demonstration, inputting ScanCannon results to showing WeaponX parse hosts, build action plans, and run follow-up tools automatically.
 
 **Watch the Presentation Here:** https://youtu.be/XQYhHuaPILs 
 
