@@ -1,4 +1,4 @@
-#  🐉 WeaponX
+# WeaponX
 
 ## Introduction
 
@@ -8,7 +8,7 @@ It is particularly useful for penetration testers or red teamers who want to str
 
 ---
 
-## ✨ Features
+## Features
 
 - Parses ScanCannon's `hosts_and_ports.txt` and `interesting_servers` output.
 - Automatically identifies services based on port numbers and labeled files.
@@ -18,7 +18,7 @@ It is particularly useful for penetration testers or red teamers who want to str
 
 ---
 
-## ⚙️ Installation
+## Installation
 
 1. Clone this repository:
    ```bash
@@ -45,7 +45,7 @@ It is particularly useful for penetration testers or red teamers who want to str
 
 ---
 
-## 🚀 Usage
+## Usage
 
 ```bash
 python3 main.py --results /path/to/scancannon/results --config config.json --dump-json output/summary.json
@@ -58,7 +58,7 @@ python3 main.py --results /path/to/scancannon/results --config config.json --dum
 
 ---
 
-## 🛠️ Configuration
+## Configuration
 
 The `config.json` file defines:
 - Which actions to take for each service.
@@ -95,7 +95,7 @@ Placeholders `{ip}`, `{port}`, and `{service}` are dynamically substituted.
 
 ---
 
-## 📦 Dependencies
+## Dependencies
 
 - Python Standard Library:
   - `argparse`, `json`, `subprocess`, `dataclasses`, `pathlib`, `collections`
@@ -108,7 +108,7 @@ Placeholders `{ip}`, `{port}`, and `{service}` are dynamically substituted.
 
 ---
 
-## 🔍 Examples
+## Examples
 
 Basic command:
 ```bash
@@ -116,7 +116,7 @@ python3 main.py --results ./results --config ./config.json
 ```
 ---
 
-## 🧰 Troubleshooting
+## Troubleshooting
 
 - **No hosts found**: Ensure `results/` contains `hosts_and_ports.txt` in subdirectories.
 - **Tool not found**: Make sure required tools (e.g., `hydra`, `nikto`) are installed and accessible.
@@ -125,13 +125,13 @@ python3 main.py --results ./results --config ./config.json
 
 ---
 
-## 👥 Contributors
+## Contributors
 
 - Kevin Pigney
 - Christian Averill
 
 ---
 
-## 📝 License
+## License
 
 This project is licensed under the [MIT License](LICENSE), unless otherwise specified.
